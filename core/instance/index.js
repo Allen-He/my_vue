@@ -8,7 +8,7 @@ class Vue {
   
   /** 初始化options */
   _init(options) {
-    initMixin(options);
+    initMixin.call(this, options);
   }
 }
 

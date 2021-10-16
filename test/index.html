@@ -18,14 +18,16 @@
   <script type="module">
     import Vue from '../core/index.js';
 
-    const vm = new Vue({
+    window.vm = new Vue({
       el: '#app',
       data: {
         title: 'This is a simple title',
         desc: 'description for this page',
         info: {
           num: 666,
-        }
+          content: 'aaa'
+        },
+        books: ['abc', 'start', 'eee']
       }
     });
   </script>
