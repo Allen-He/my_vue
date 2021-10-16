@@ -48,6 +48,13 @@ function proxyObserver(vm, data) {
   // 将data响应式化
   observer(vm, data);
 
+  // 将data中的各属性对应的响应式数据，直接挂载到当前实例vm的同名属性上
+  for (const prop in data) {
+    if (Object.hasOwnProperty.call(data, prop)) {
+      vm[prop] = data[prop];
+    }
+  }
+
   vm.$set = function (data, key, value) {
     if(Array.isArray(data)) {
         data.splice(key, 1, value);
