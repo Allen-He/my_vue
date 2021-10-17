@@ -1,3 +1,4 @@
+import mount, { initMount } from "./mount.js";
 import proxyObserver from "./proxy.js";
 
 /** 初始化options的工具函数（★调用该init方法时，必须先绑定this指向★） */
@@ -21,7 +22,11 @@ function init(options) {
   // 初始化created钩子函数
 
   // 挂载虚拟DOM到根节点el上
-
+  if(options && options.el) {
+    let rootDom = document.getElementById(options.el.substring(1));
+    mount(vm, rootDom);
+  }
+  initMount(vm);
 }
 
 export default init;

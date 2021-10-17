@@ -1,6 +1,6 @@
 class VNode {
   /**
-   * @param {*} tag 标签类型
+   * @param {*} tag 标签名
    * @param {*} elem 对应的真实节点
    * @param {*} children 当前虚拟节点的子节点
    * @param {*} text 当前虚拟节点中的文本
