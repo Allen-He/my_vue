@@ -55,7 +55,7 @@ function proxyObserver(vm, data) {
     }
   }
 
-  vm.$set = function (data, key, value) {
+  vm.__proto__.$set = function (data, key, value) {
     if(Array.isArray(data)) {
         data.splice(key, 1, value);
         return value;
@@ -66,7 +66,7 @@ function proxyObserver(vm, data) {
     return value;
   }
 
-  vm.$delete = function (data, key) {
+  vm.__proto__.$delete = function (data, key) {
     if(Array.isArray(data)) {
         data.splice(key, 1);
     }
