@@ -1,4 +1,5 @@
 import VNode from "../vdom/vnode.js";
+import { getTemplate2Vnode, getVnode2Template, prepareRender } from "./render.js";
 
 /**
  * 在Vue.prototype上定义$mount方法（可用于后续手动挂载）
@@ -15,7 +16,10 @@ export function initMount(vm) {
 function mount(vm, elem) {
   // 进行挂载虚拟节点树
   vm._vnode = constructVNode(vm, elem, null);
-  // 进行预备渲染
+  // 进行预备渲染（建立"模板<——>节点"索引，即：双向映射表）
+  prepareRender(vm, vm._vnode);
+  console.log(getTemplate2Vnode());
+  console.log(getVnode2Template());
 }
 
 function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
