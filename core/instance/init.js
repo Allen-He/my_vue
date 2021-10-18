@@ -1,5 +1,5 @@
 import mount, { initMount } from "./mount.js";
-import proxyObserver from "./proxy.js";
+import { constructProxy } from "./proxy.js";
 
 /** 初始化options的工具函数（★调用该init方法时，必须先绑定this指向★） */
 let uid = 0;
@@ -11,8 +11,7 @@ function init(options) {
 
   // 初始化data
   if(options && options.data) {
-    proxyObserver(vm, options.data); //将data中的数据转化为响应式的
-    vm._data = options.data;
+    vm._data = constructProxy(vm, options.data, "");
   }
 
   // 初始化computed

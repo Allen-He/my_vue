@@ -1,3 +1,4 @@
+import getObjVal from "../util/getObjVal.js";
 
 /** 根据template找vnode（Map） */
 const template2Vnode = new Map();
@@ -54,4 +55,38 @@ export function getTemplate2Vnode() {
 }
 export function getVnode2Template() {
   return vnode2Template;
+}
+
+
+export default function render() {  
+  const vm = this; //暂存Vue实例（★调用该render方法时，必须先绑定this指向★）
+  renderNode(this, vm._vnode);
+}
+
+function renderNode(vm, vnode) {
+  if(vnode.nodeType === 3) { //若当前vnode为文本节点，对模板数据进行渲染
+    const templateArr = vnode2Template.get(vnode);
+    if(templateArr) { //如果当前文本节点的文本中存在对应的template数据
+      let resText = vnode.text //获取vnode.text的值用于后续处理，但其本身不做更改
+      for (let i = 0; i < templateArr.length; i++) {
+        const realVal = getObjVal(vm._data, templateArr[i]);
+        resText = resText.replace(`{{ ${templateArr[i]} }}`, realVal);
+      }
+      vnode.elem.nodeValue = resText; //将DOM元素的nodeValue更新为resText（即：渲染数据）
+    }
+  }else if(vnode.nodeType === 1) { // 若为元素节点，遍历渲染其子节点
+    for (let i = 0; i < vnode.children.length; i++) {
+      renderNode(vm, vnode.children[i]);
+    }
+  }
+}
+
+/** 数据更新后，通知被更新数据的namespace对应的虚拟节点进行渲染 */
+export function renderData(vm, dataStr) {
+  const vnodeArr = template2Vnode.get(dataStr);
+  if(vnodeArr) {
+    for (let i = 0; i < vnodeArr.length; i++) {
+      renderNode(vm, vnodeArr[i]);
+    }
+  }
 }

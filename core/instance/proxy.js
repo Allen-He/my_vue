@@ -1,79 +1,94 @@
+import { renderData } from './render.js';
 
-function render() {
-  console.log('数据更新了！');
-}
 
-// 定义数组变异方法
-const arrayProto = Array.prototype;
-const arrayMethods = Object.create(arrayProto);
-const uniqueArr = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
-uniqueArr.forEach(method => {
-  arrayMethods[method] = function (...args) {
-    arrayProto[method].apply(this, args);
-    // TODO: 待调用render函数
-    render();
-  }
-})
-
-function defineReactive(vm, data, key, val) {
-  observer(vm, val);
-  Object.defineProperty(data, key, {
-    get() {
-      return val;
-    },
-    set(newVal) {
-      if(newVal === val) {
-        return;
-      }
-      val = newVal;
-      // TODO: 待调用render函数
-      render();
-    }
-  });
-}
-
-function observer(vm, data) {
+export function constructProxy(vm, data, namespace) {  
+  let proxy = {};
   if(Array.isArray(data)) {
-    data.__proto__ = arrayMethods; //若data为数组，改变其隐式原型（增加数组变异方法）
-    return;
-  } 
-  if(typeof data === 'object') {
-    for (const key in data) {
-      defineReactive(vm, data, key, data[key]);
+    proxy = new Array(data.length);
+    for (let i = 0; i < proxy.length; i++) {
+      proxy[i] = constructProxy(vm, data[i], namespace);
     }
+    proxy = proxyArr(vm, data, namespace); //通过“修改data数组的隐式原型”的方法增加数组变异方法
+  }else if(typeof data === 'object') {
+    proxy = constructProxyObj(vm, data, namespace);
   }
+  return proxy;
 }
 
-function proxyObserver(vm, data) {
-  // 将data响应式化
-  observer(vm, data);
+const arrayProto = Array.prototype; //暂存数组的原型
 
-  // 将data中的各属性对应的响应式数据，直接挂载到当前实例vm的同名属性上
-  for (const prop in data) {
-    if (Object.hasOwnProperty.call(data, prop)) {
-      vm[prop] = data[prop];
+function proxyArr(vm, arr, namespace) {
+  let interObj = {
+    dataType: 'Array',
+    toString() {
+      return arrayProto.toString();
     }
+  };
+  // 定义数组变异方法
+  const funcArr = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+  for (let i = 0; i < funcArr.length; i++) {
+    defineArrFunc.call(vm, interObj, funcArr[i], namespace, vm);
   }
-
-  vm.__proto__.$set = function (data, key, value) {
-    if(Array.isArray(data)) {
-        data.splice(key, 1, value);
-        return value;
-    }
-    defineReactive(data, key, value);
-    // TODO: 待调用render函数
-    render();
-    return value;
-  }
-
-  vm.__proto__.$delete = function (data, key) {
-    if(Array.isArray(data)) {
-        data.splice(key, 1);
-    }
-    delete data[key];
-    // TODO: 待调用render函数
-    render();
-  }
+  // 修改arr的隐式原型
+  arr.__proto__ = interObj;
+  return arr;
 }
 
-export default proxyObserver;
+function defineArrFunc(obj, func, namespace, vm) {
+  Object.defineProperty(obj, func, {
+    enumerable: true,
+    configurable: true,
+    value: function (...args) {
+      const arrayProtoFunc = arrayProto[func];
+      const res = arrayProtoFunc.apply(this, args);
+      renderData(vm, getNamespace(namespace, ''));
+      return res;
+    }
+  })
+}
+
+function constructProxyObj(vm, obj, namespace) {
+  let proxyObj = {};
+  for (const prop in obj) {
+    Object.defineProperty(proxyObj, prop, {
+      get() {
+        return obj[prop];
+      },
+      set(newVal) {
+        if(newVal === obj[prop]) {
+          return;
+        }
+        obj[prop] = newVal;
+        renderData(vm, getNamespace(namespace, prop));
+      }
+    });
+    Object.defineProperty(vm, prop, {
+      get() {
+        return obj[prop];
+      },
+      set(newVal) {
+        if(newVal === obj[prop]) {
+          return;
+        }
+        obj[prop] = newVal;
+        renderData(vm, getNamespace(namespace, prop));
+      }
+    });
+    
+    if(typeof obj[prop] === 'object') {
+      proxyObj[prop] = constructProxy(vm, obj[prop], getNamespace(namespace, prop));
+    }
+  }
+  return proxyObj;
+}
+
+/** 获取当前属性的命名空间 */
+function getNamespace(curNamespace, curProp) {
+  if(curNamespace == null || curNamespace == '') {
+    return curProp;
+  }else if(curProp == null || curProp == '') {
+    return curNamespace;
+  }else {
+    return curNamespace + '.' + curProp;
+  }
+}
