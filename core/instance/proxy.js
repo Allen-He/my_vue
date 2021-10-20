@@ -21,7 +21,13 @@ function proxyArr(vm, arr, namespace) {
   let interObj = {
     dataType: 'Array',
     toString() {
-      return arrayProto.toString();
+      const arr = this;
+      let resStr = '';
+      for (let i = 0; i < arr.length; i++) {
+        resStr += arr[i] + ','
+      }
+      resStr = resStr.substring(0, resStr.length - 1);
+      return resStr;
     }
   };
   // 定义数组变异方法
