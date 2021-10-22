@@ -71,7 +71,7 @@ function renderNode(vm, vnode) {
     if(templateArr) { //如果当前文本节点的文本中存在对应的template数据
       let resText = vnode.text //获取vnode.text的值用于后续处理，但其本身不做更改
       for (let i = 0; i < templateArr.length; i++) {
-        const realVal = getObjVal(vm._data, templateArr[i]);
+        const realVal = getTemplateValue([vm._data, vnode.env], templateArr[i]);
         resText = resText.replace(`{{ ${templateArr[i]} }}`, realVal);
       }
       vnode.elem.nodeValue = resText; //将DOM元素的nodeValue更新为resText（即：渲染数据）
@@ -80,7 +80,7 @@ function renderNode(vm, vnode) {
     const templateArr = vnode2Template.get(vnode);
     if(templateArr) {
       for (let i = 0; i < templateArr.length; i++) {
-        const realVal = getObjVal(vm._data, templateArr[i]);
+        const realVal = getTemplateValue([vm._data, vnode.env], templateArr[i]);
         if(realVal) { //若该值不为空，则初始化input的value值
           vnode.elem.value = realVal;
         }
@@ -91,6 +91,17 @@ function renderNode(vm, vnode) {
       renderNode(vm, vnode.children[i]);
     }
   }
+}
+
+/** 根据templateName在vm._data和当前vnode的env对象属性中寻找对应数据值 */
+function getTemplateValue(envsArr, templateName) {
+  for (let i = 0; i < envsArr.length; i++) {
+    let resVal = getObjVal(envsArr[i], templateName);
+    if(resVal) {
+      return resVal;
+    }
+  }
+  return;
 }
 
 /** 数据更新后，通知被更新数据的namespace对应的虚拟节点进行渲染 */
