@@ -13,6 +13,11 @@
     <h2>{{ title }}</h2>
     <p>{{ desc }}</p>
     <span>{{ desc }} number：{{ info.num }}</span>
+    <br><br>
+    <label for="inputBox">
+      <input id="inputBox" type="text" v-model="inputVal">
+      {{ inputVal }}
+    </label>
   </div>
 
   <script type="module">
@@ -27,7 +32,8 @@
           num: 666,
           content: 'aaa'
         },
-        books: ['abc', 'start', 'eee']
+        books: ['abc', 'start', 'eee'],
+        inputVal: 'text'
       }
     });
   </script>

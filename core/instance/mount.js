@@ -1,4 +1,5 @@
 import VNode from "../vdom/vnode.js";
+import { vmodel } from "./grammer/vmodel.js";
 import { getTemplate2Vnode, getVnode2Template, prepareRender } from "./render.js";
 
 /**
@@ -23,6 +24,7 @@ function mount(vm, elem) {
 }
 
 function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
+  analyseAttrs(vm, elem, parent);
   const tag = elem.nodeName;
   const children = [];
   const text = getNodeText(elem);
@@ -47,6 +49,16 @@ function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
 /** 若该节点为“文本节点”时返回其文本，否则返回空串 */
 function getNodeText(elem) {
   return elem.nodeType === 3 ? elem.nodeValue : '';
+}
+
+/** 分析标签元素的属性 */
+function analyseAttrs(vm, elem, parent) {
+  if(elem.nodeType === 1) {
+    let attrNames = elem.getAttributeNames();
+    if(attrNames.includes('v-model')) {
+      vmodel(vm, elem, elem.getAttribute('v-model'));
+    }
+  }
 }
 
 export default mount;

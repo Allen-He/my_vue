@@ -1,4 +1,4 @@
-import getObjVal from "../util/getObjVal.js";
+import { getObjVal } from "../util/handleObjVal.js";
 
 /** 根据template找vnode（Map） */
 const template2Vnode = new Map();
@@ -10,7 +10,9 @@ export function prepareRender(vm, vnode) {
   if(vnode == null) return;
   if(vnode.nodeType === 3) { //当前vnode为文本节点
     analyseTemplateString(vnode);
-  }else if(vnode.nodeType === 1) { //当前vnode为元素节点
+  }
+  analyseAttrs(vm, vnode);
+  if(vnode.nodeType === 1) { //当前vnode为元素节点
     for (let i = 0; i < vnode.children.length; i++) {
       prepareRender(vm, vnode.children[i]);
     }
@@ -74,7 +76,17 @@ function renderNode(vm, vnode) {
       }
       vnode.elem.nodeValue = resText; //将DOM元素的nodeValue更新为resText（即：渲染数据）
     }
-  }else if(vnode.nodeType === 1) { // 若为元素节点，遍历渲染其子节点
+  }else if(vnode.nodeType === 1 && vnode.tag === 'INPUT') { //如果当前为input元素，渲染其value值
+    const templateArr = vnode2Template.get(vnode);
+    if(templateArr) {
+      for (let i = 0; i < templateArr.length; i++) {
+        const realVal = getObjVal(vm._data, templateArr[i]);
+        if(realVal) { //若该值不为空，则初始化input的value值
+          vnode.elem.value = realVal;
+        }
+      }
+    }
+  }else { // 若为元素节点，遍历渲染其子节点
     for (let i = 0; i < vnode.children.length; i++) {
       renderNode(vm, vnode.children[i]);
     }
@@ -87,6 +99,17 @@ export function renderData(vm, dataStr) {
   if(vnodeArr) {
     for (let i = 0; i < vnodeArr.length; i++) {
       renderNode(vm, vnodeArr[i]);
+    }
+  }
+}
+
+function analyseAttrs(vm, vnode) {
+  if(vnode.nodeType === 1 && vnode.tag === 'INPUT') {
+    let attrNames = vnode.elem.getAttributeNames();
+    if(attrNames.includes('v-model')) {
+      const template = `{{ ${vnode.elem.getAttribute('v-model')} }}`;
+      setTemplate2Vnode(template, vnode);
+      setVnode2Template(template, vnode);
     }
   }
 }
