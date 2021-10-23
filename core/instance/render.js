@@ -12,10 +12,9 @@ export function prepareRender(vm, vnode) {
     analyseTemplateString(vnode);
   }
   analyseAttrs(vm, vnode);
-  if(vnode.nodeType === 1) { //当前vnode为元素节点
-    for (let i = 0; i < vnode.children.length; i++) {
-      prepareRender(vm, vnode.children[i]);
-    }
+  // 当前vnode若不是文本节点，继续向下遍历
+  for (let i = 0; i < vnode.children.length; i++) {
+    prepareRender(vm, vnode.children[i]);
   }
 }
 
@@ -97,7 +96,7 @@ function renderNode(vm, vnode) {
 function getTemplateValue(envsArr, templateName) {
   for (let i = 0; i < envsArr.length; i++) {
     let resVal = getObjVal(envsArr[i], templateName);
-    if(resVal) {
+    if(resVal !== undefined) {
       return resVal;
     }
   }

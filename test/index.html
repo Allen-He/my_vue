@@ -18,6 +18,14 @@
       <input id="inputBox" type="text" v-model="inputVal">
       {{ inputVal }}
     </label>
+    <br><br>
+    <ul>
+      <li
+        v-for="(item,index) in books"
+      >
+        <span>{{ index }}</span> — <span>title：{{ item.name }}</span> &nbsp;|&nbsp; <span>from：{{ item.where }}</span>
+      </li> 
+    </ul>
   </div>
 
   <script type="module">
@@ -30,9 +38,26 @@
         desc: 'description for this page',
         info: {
           num: 666,
-          content: 'aaa'
+          content: 'aaa',
+          extra: {
+            xx: 'xxx',
+            hh: 'hhh'
+          }
         },
-        books: ['abc', 'start', 'eee'],
+        books: [
+          {
+            name: '你不知道的JS',
+            where: 'US',
+          },
+          {
+            name: '富爸爸 穷爸爸',
+            where: 'US',
+          }, 
+          {
+            name: '向上生长',
+            where: 'CN',
+          }
+        ],
         inputVal: 'text'
       }
     });
