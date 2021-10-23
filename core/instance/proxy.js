@@ -68,18 +68,20 @@ function constructProxyObj(vm, obj, namespace) {
         renderData(vm, getNamespace(namespace, prop));
       }
     });
-    Object.defineProperty(vm, prop, {
-      get() {
-        return obj[prop];
-      },
-      set(newVal) {
-        if(newVal === obj[prop]) {
-          return;
+    if(namespace === '') { //将data中最外层的属性引用代理到当前vm实例上，data中的嵌套属性不做该处理
+      Object.defineProperty(vm, prop, {
+        get() {
+          return obj[prop];
+        },
+        set(newVal) {
+          if(newVal === obj[prop]) {
+            return;
+          }
+          obj[prop] = newVal;
+          renderData(vm, getNamespace(namespace, prop));
         }
-        obj[prop] = newVal;
-        renderData(vm, getNamespace(namespace, prop));
-      }
-    });
+      });
+    }
     
     if(typeof obj[prop] === 'object') {
       proxyObj[prop] = constructProxy(vm, obj[prop], getNamespace(namespace, prop));
