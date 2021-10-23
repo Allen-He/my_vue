@@ -66,8 +66,14 @@ function constructProxyObj(vm, obj, namespace) {
         if(newVal === obj[prop]) {
           return;
         }
-        obj[prop] = newVal;
-        renderData(vm, getNamespace(namespace, prop));
+        if(newVal instanceof Array) {
+          obj[prop] = constructProxy(vm, newVal, getNamespace(namespace, prop))
+          rebuild(vm, getNamespace(namespace, prop));
+          renderData(vm, getNamespace(namespace, prop));
+        }else {
+          obj[prop] = newVal;
+          renderData(vm, getNamespace(namespace, prop));
+        }
       }
     });
     if(namespace === '') { //将data中最外层的属性引用代理到当前vm实例上，data中的嵌套属性不做该处理
@@ -79,8 +85,14 @@ function constructProxyObj(vm, obj, namespace) {
           if(newVal === obj[prop]) {
             return;
           }
-          obj[prop] = newVal;
-          renderData(vm, getNamespace(namespace, prop));
+          if(newVal instanceof Array) {
+            obj[prop] = constructProxy(vm, newVal, getNamespace(namespace, prop));
+            rebuild(vm, getNamespace(namespace, prop));
+            renderData(vm, getNamespace(namespace, prop));
+          }else {
+            obj[prop] = newVal;
+            renderData(vm, getNamespace(namespace, prop));
+          }
         }
       });
     }
