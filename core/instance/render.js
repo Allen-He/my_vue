@@ -11,6 +11,11 @@ export function prepareRender(vm, vnode) {
   if(vnode.nodeType === 3) { //当前vnode为文本节点
     analyseTemplateString(vnode);
   }
+  if(vnode.nodeType === 0) { // 当前vnode是v-for指令对应的虚拟节点，需要在“双向映射表”中存相应的映射关系
+    const temp = `{{ ${vnode.data} }}`;
+    setTemplate2Vnode(temp, vnode);
+    setVnode2Template(temp, vnode);
+  }
   analyseAttrs(vm, vnode);
   // 当前vnode若不是文本节点，继续向下遍历
   for (let i = 0; i < vnode.children.length; i++) {

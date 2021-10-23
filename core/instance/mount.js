@@ -21,8 +21,8 @@ function mount(vm, elem) {
   vm._vnode = constructVNode(vm, elem, null);
   // 进行预备渲染（建立"模板<——>节点"索引，即：双向映射表）
   prepareRender(vm, vm._vnode);
-  // console.log(getTemplate2Vnode());
-  // console.log(getVnode2Template());
+  console.log(getTemplate2Vnode());
+  console.log(getVnode2Template());
 }
 
 function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
@@ -43,7 +43,7 @@ function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
   }
 
   // 若当前vnode的nodeType为0，即该节点为v-for指令对应的虚拟节点，那么它的vnodeChildNodes应置为其父元素对应的childNodes
-  const vnodeChildNodes = vnode.nodeType === 0 ? vnode.parent.elem.childNodes : elem.childNodes;
+  const vnodeChildNodes = vnode.nodeType === 0 ? vnode.parent.elem.childNodes : vnode.elem.childNodes;
   const len = vnodeChildNodes.length;
   for (let i = 0; i < len; i++) {
     const childNode = constructVNode(vm, vnodeChildNodes[i], vnode);
