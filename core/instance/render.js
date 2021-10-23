@@ -128,3 +128,14 @@ function analyseAttrs(vm, vnode) {
     }
   }
 }
+
+/** 根据template获取对应的vnode */
+export function getVnodeByTemplate(template) {
+  return template2Vnode.get(template);
+}
+
+/** 清空当前的两个"模板<——>节点"关系映射表 */
+export function clearMap() {
+  template2Vnode.clear();
+  vnode2Template.clear();
+}

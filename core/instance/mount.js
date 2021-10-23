@@ -2,7 +2,7 @@ import VNode from "../vdom/vnode.js";
 import { mergeAttr } from '../util/handleObjVal.js'
 import { vfor } from './grammer/vfor.js';
 import { vmodel } from "./grammer/vmodel.js";
-import { getTemplate2Vnode, getVnode2Template, prepareRender } from "./render.js";
+import { getTemplate2Vnode, getVnode2Template, prepareRender, getVnodeByTemplate, clearMap } from "./render.js";
 
 /**
  * 在Vue.prototype上定义$mount方法（可用于后续手动挂载）
@@ -21,8 +21,8 @@ function mount(vm, elem) {
   vm._vnode = constructVNode(vm, elem, null);
   // 进行预备渲染（建立"模板<——>节点"索引，即：双向映射表）
   prepareRender(vm, vm._vnode);
-  console.log(getTemplate2Vnode());
-  console.log(getVnode2Template());
+  // console.log(getTemplate2Vnode());
+  // console.log(getVnode2Template());
 }
 
 function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
@@ -74,6 +74,19 @@ function analyseAttrs(vm, elem, parent) {
     }
   }
   return vnode;
+}
+
+/** 重构v-for指令对应的DOM结构及vnode（用于在数组项发生变动之后，更新对应的v-for渲染的列表） */
+export function rebuild(vm, templateName) {
+  const vnodesArr = getVnodeByTemplate(templateName);
+  for (let i = 0; i < vnodesArr.length; i++) {
+    vnodesArr[i].parent.elem.innerHTML = '';
+    vnodesArr[i].parent.elem.appendChild(vnodesArr[i].elem);
+    const newVnode = constructVNode(vm, vnodesArr[i].elem, vnodesArr[i].parent);
+    vnodesArr[i].parent.children = [newVnode];
+    clearMap(); //清空映射表
+    prepareRender(vm, vm._vnode); //重新构建映射表
+  }
 }
 
 export default mount;

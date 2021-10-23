@@ -1,3 +1,4 @@
+import { rebuild } from './mount.js';
 import { renderData } from './render.js';
 
 
@@ -47,6 +48,7 @@ function defineArrFunc(obj, func, namespace, vm) {
     value: function (...args) {
       const arrayProtoFunc = arrayProto[func];
       const res = arrayProtoFunc.apply(this, args);
+      rebuild(vm, getNamespace(namespace, ''));
       renderData(vm, getNamespace(namespace, ''));
       return res;
     }
