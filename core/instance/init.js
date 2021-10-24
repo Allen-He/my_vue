@@ -16,8 +16,13 @@ function init(options) {
 
   // 初始化computed
 
-  // 初始化method
-
+  // 初始化methods
+  if(options && options.methods) {
+    vm._methods = options.methods;
+    for (const prop in options.methods) {
+      vm[prop] = options.methods[prop];
+    }
+  }
   // 初始化created钩子函数
 
   // 挂载虚拟DOM到根节点el上

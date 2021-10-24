@@ -3,6 +3,7 @@ import { mergeAttr } from '../util/handleObjVal.js'
 import { vfor } from './grammer/vfor.js';
 import { vmodel } from "./grammer/vmodel.js";
 import { checkVBind } from './grammer/vbind.js';
+import { checkVOn } from './grammer/von.js';
 import { getTemplate2Vnode, getVnode2Template, prepareRender, getVnodeByTemplate, clearMap } from "./render.js";
 
 /**
@@ -45,6 +46,7 @@ function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
   }
   // 检查并解析v-bind和v-on指令
   checkVBind(vm, vnode);
+  checkVOn(vm, vnode);
 
   // 若当前vnode的nodeType为0，即该节点为v-for指令对应的虚拟节点，那么它的vnodeChildNodes应置为其父元素对应的childNodes
   const vnodeChildNodes = vnode.nodeType === 0 ? vnode.parent.elem.childNodes : vnode.elem.childNodes;

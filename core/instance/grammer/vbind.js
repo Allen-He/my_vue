@@ -18,7 +18,6 @@ function vbind(vm, vnode, name, value) {
   let attrVal = null;
 
   if(/^{[\w\W]+}$/.test(value)) { //value是对象字符串的形式
-    console.log(value);
     const expressionStr = value.substring(1, value.length - 1).trim();
     const expressionArr = expressionStr.split(',');
     attrVal = analyseExpressionArr(vm, vnode, expressionArr);

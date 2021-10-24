@@ -29,6 +29,8 @@
     <br><br>
     <div v-bind:class="pressClass">动态数据绑定</div>
     <div :class="{ weight, red: info.num < 100, blue: info.num >= 100 }">测试文本</div>
+    <div class="squre" v-on:click="clickHandle1">点我呗</div>
+    <div class="squre" @click="clickHandle2">点我呗</div>
   </div>
 
   <script type="module">
@@ -63,7 +65,15 @@
         ],
         inputVal: 'text',
         pressClass: 'press'
-      }
+      },
+      methods: {
+        clickHandle1(e) {
+          console.log('click 1 ~~~');
+        },
+        clickHandle2(e) {
+          console.log('click 2 ~~~');
+        }
+      },
     });
   </script>
 </body>

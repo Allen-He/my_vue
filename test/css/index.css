@@ -18,3 +18,15 @@
 .weight {
   font-weight: bold;
 }
+.squre {
+  width: 60px;
+  height: 60px;
+  background-color: #000;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  line-height: 60px;
+  cursor: pointer;
+  user-select: none;
+  margin: 15px auto;
+}
