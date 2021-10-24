@@ -15,7 +15,12 @@ function init(options) {
   }
 
   // 初始化computed
-
+  if (options && options.computed) {
+    vm._computed = options.computed;
+    for (let temp in options.computed) {
+        vm[temp] = options.computed[temp];
+    }
+  }
   // 初始化methods
   if(options && options.methods) {
     vm._methods = options.methods;
@@ -24,9 +29,12 @@ function init(options) {
     }
   }
   // 初始化created钩子函数
-
+  if(options && options.created) {
+    vm._created = options.created;
+  }
   // 挂载虚拟DOM到根节点el上
   if(options && options.el) {
+    vm._created && vm._created(); //触发生命周期中的created钩子函数
     let rootDom = document.getElementById(options.el.substring(1));
     mount(vm, rootDom);
   }

@@ -3,7 +3,6 @@ import renderMixin from './render.js';
 
 class Vue {
   constructor(options) {
-    console.log(options);
     this._init(options);
     this._render();
   }
