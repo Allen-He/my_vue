@@ -36,7 +36,8 @@ function constructVNode(vm, elem, parent) { //“深度优先搜索”原理
     const key = null;
     vnode = new VNode(tag, elem, children, text, data, parent, nodeType, key);
     if(elem.nodeType === 1 && elem.getAttribute('env')) {
-      vnode.env = mergeAttr(vnode.env, JSON.parse(elem.getAttribute("env")));
+      vnode.env = mergeAttr(vnode.env, JSON.parse(elem.getAttribute('env')));
+      elem.removeAttribute('env'); //若标签上有env属性，设置好当前vnode.env之后需将其移出
     }else {
       vnode.env = mergeAttr(vnode.env, parent ? parent.env : {});
     }
