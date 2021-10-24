@@ -1,3 +1,20 @@
 #app {
   text-align: center;
 }
+.press {
+  color: #f40;
+  font-weight: bold;
+}
+.light {
+  color: #000;
+  font-weight: normal;
+}
+.red {
+  color: red;
+}
+.blue {
+  color: blue;
+}
+.weight {
+  font-weight: bold;
+}

@@ -77,3 +77,10 @@ function cloneArray(arr) {
   }
   return resArr;
 }
+
+/** 混合当前vnode的执行环境（能够访问到的数据变量范围） */
+export function getEnvObj(vm, vnode) {
+  let result = mergeAttr(vm._data, vnode.env);
+  result = mergeAttr(result, vm._computed);
+  return result;
+}

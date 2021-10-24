@@ -26,6 +26,9 @@
         <span>{{ index }}</span> — <span>title：{{ item.name }}</span> &nbsp;|&nbsp; <span>from：{{ item.where }}</span>
       </li> 
     </ul>
+    <br><br>
+    <div v-bind:class="pressClass">动态数据绑定</div>
+    <div :class="{ weight, red: info.num < 100, blue: info.num >= 100 }">测试文本</div>
   </div>
 
   <script type="module">
@@ -58,7 +61,8 @@
             where: 'CN',
           }
         ],
-        inputVal: 'text'
+        inputVal: 'text',
+        pressClass: 'press'
       }
     });
   </script>
