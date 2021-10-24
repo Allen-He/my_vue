@@ -1,8 +1,8 @@
 # my_vue
 Referring to Vue, try to develop a small MVVM framework to understand its principle better.
 
-## 技术栈
-ES6：ESModule、class、定义属性描述符（存取器属性）
+## 技术栈（ES6）
+ES Module、定义属性描述符（存取器属性）、虚拟DOM
 
 ## 使用方法
 使用方法和Vue类似，详见test目录下的两个示例。主要功能如下：
