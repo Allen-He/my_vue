@@ -27,6 +27,7 @@
       </li> 
     </ul>
     <br><br>
+    <img :src="imgSrc" width="150px">
     <div v-bind:class="pressClass">动态数据绑定</div>
     <div :class="{ weight, red: info.num < 100, blue: info.num >= 100 }">测试文本</div>
     <div class="squre" v-on:click="clickHandle1">点我呗</div>
@@ -64,6 +65,7 @@
           }
         ],
         inputVal: 'text',
+        imgSrc: './img/code.jpeg',
         pressClass: 'press'
       },
       methods: {

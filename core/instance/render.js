@@ -85,7 +85,7 @@ function renderNode(vm, vnode) {
     if(templateArr) {
       for (let i = 0; i < templateArr.length; i++) {
         const realVal = getTemplateValue([vm._data, vnode.env], templateArr[i]);
-        if(realVal) { //若该值不为空，则初始化input的value值
+        if(realVal !== undefined) { //若该值不为空，则初始化input的value值
           vnode.elem.value = realVal;
         }
       }
